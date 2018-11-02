@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-class Index extends Component{
+class Home extends Component{
   renderUsuarios(){
     const { usuarios } = this.props
 
@@ -43,4 +43,4 @@ class Index extends Component{
 function mapStateToProps({ usuarios }){
   return { usuarios }
 }
-export default connect(mapStateToProps)(Index)
+export default connect(mapStateToProps)(Home)

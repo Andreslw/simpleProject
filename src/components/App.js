@@ -1,34 +1,35 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import {createStore, applyMiddleware} from 'redux'
-import { Provider } from 'react-redux'
-import reducers from '../reducers/index'
-import Index from './index'
+import { connect } from 'react-redux'
+import Home from './home'
 import Header from './Header'
 import Ver from './ver'
 import Nuevo from './nuevo'
-
-const createStoreWithMiddleware = applyMiddleware()(createStore)
+import { cargaUsuarios } from '../actions'
 
 class App extends Component {
+  componentWillMount(){
+    console.log(`cargando datos locales`)
+    let usuarios = localStorage.getItem("usuarios")
+    if(usuarios){
+      this.props.cargaUsuarios(JSON.parse(usuarios))
+    }
+  }
+
   render() {
     return (
-      <div className="App">
-        <Provider store={ createStoreWithMiddleware(reducers) }>
-            <BrowserRouter>
-              <div>
-                <Header />
-                <Switch>
-                  <Route exact path="/" component={Index} />
-                  <Route path="/usuarios/nuevo" component={Nuevo} />
-                  <Route path="/usuarios/:id" component={Ver} />
-                </Switch>
-              </div>
-            </BrowserRouter>
-        </Provider>
-      </div>
+        <BrowserRouter>
+        <div className="App">
+            <Header />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/usuarios/nuevo" component={Nuevo} />
+              <Route path="/usuarios/:id" component={Ver} />
+            </Switch>
+          </div>
+        </BrowserRouter>
     );
   }
 }
 
-export default App;
+export default connect(null, { cargaUsuarios })(App);
