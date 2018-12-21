@@ -5,9 +5,10 @@ import { Field, reduxForm } from "redux-form";
 import { guardaUsuario } from "../actions/index";
 
 class Nuevo extends Component {
-  renderField({ label, type = "text", placeholder = "", input, meta }) {
+  renderField({ label, hidden, type = "text", placeholder = "", input, meta }) {
     const { touched, error } = meta;
-    const className = `form-group ${touched && error ? "has-danger" : ""}`;
+    let className = `form-group ${touched && error ? "has-danger" : ""}`;
+    className += hidden ? " hidden " : "";
     return (
       <div className={className}>
         <label>{label}</label>
@@ -21,6 +22,21 @@ class Nuevo extends Component {
       </div>
     );
   }
+  componentDidMount() {
+    this.props.initialize(this.getUserEditar());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.match !== nextProps.match) {
+      this.props = nextProps;
+      this.props.initialize(this.getUserEditar());
+    }
+  }
+
+  getUserEditar = () => {
+    const userId = this.props.match.params.id;
+    return userId ? this.props.usuarios[userId] : {};
+  };
 
   onSubmit(values) {
     this.props.guardaUsuario(values);
@@ -29,8 +45,16 @@ class Nuevo extends Component {
 
   render() {
     const { handleSubmit } = this.props;
+    const userId = this.props.match.params.id;
+
     return (
       <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+        <Field
+          type="text"
+          name="id"
+          hidden={true}
+          component={this.renderField}
+        />
         <Field
           name="nombre"
           label="Nombre"
@@ -57,7 +81,9 @@ class Nuevo extends Component {
           component={this.renderField}
         />
         <Field name="colonia" label="Colonia" component={this.renderField} />
-        <button className="btn btn-success">Guardar</button>
+        <button className={userId ? "btn btn-primary" : "btn btn-success"}>
+          {userId ? "Actualizar" : "Guardar"}
+        </button>
         <Link className="btn btn-danger" to="/">
           Cancelar
         </Link>
@@ -96,12 +122,16 @@ function validate(values) {
   return errors;
 }
 
+function mapStateToProps({ usuarios }) {
+  return { usuarios };
+}
 export default reduxForm({
   validate,
+  destroyOnUnmount: true,
   form: "Usuarios-form"
 })(
   connect(
-    null,
+    mapStateToProps,
     { guardaUsuario }
   )(Nuevo)
 );

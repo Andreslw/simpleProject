@@ -13,8 +13,9 @@ class App extends Component {
           <Header />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/usuarios/nuevo" component={Nuevo} />
-            <Route path="/usuarios/:id" component={Ver} />
+            <Route exact path="/usuarios/nuevo" component={Nuevo} />
+            <Route exact path="/usuarios/:id" component={Ver} />
+            <Route exact path="/usuarios/editar/:id" component={Nuevo} />
           </Switch>
         </div>
       </BrowserRouter>
