@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { eliminaUsuario } from "../actions";
 import { Link } from "react-router-dom";
+const botonesDiv = {
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gridGap: "5px"
+};
 class Home extends Component {
   renderUsuarios() {
     const { usuarios } = this.props;
@@ -11,20 +17,25 @@ class Home extends Component {
           <td>{usuarios[u].nombre}</td>
           <td>{usuarios[u].email}</td>
           <td>{usuarios[u].fecha_nacimiento}</td>
-          <td>
+          <td style={botonesDiv}>
             <Link
               className="btn btn-primary"
               to={`/usuarios/${usuarios[u].id}`}
             >
-              Ver
+              <span className="glyphicon glyphicon-eye-open" />
             </Link>
             <Link
               className="btn btn-warning"
               to={`/usuarios/editar/${usuarios[u].id}`}
             >
-              Editar
+              <span className="glyphicon glyphicon-pencil" />
             </Link>
-            <button className="btn btn-danger">Eliminar</button>
+            <button
+              className="btn btn-danger"
+              onClick={() => this.props.eliminaUsuario(usuarios[u].id)}
+            >
+              <span className="glyphicon glyphicon-trash" />
+            </button>
           </td>
         </tr>
       );
@@ -55,4 +66,7 @@ class Home extends Component {
 function mapStateToProps({ usuarios }) {
   return { usuarios };
 }
-export default connect(mapStateToProps)(Home);
+export default connect(
+  mapStateToProps,
+  { eliminaUsuario }
+)(Home);
