@@ -112,11 +112,14 @@ function validate(values) {
     ) {
       errors[c] = "Ingrese un email válido";
     }
-    if (
-      c === "fecha_nacimiento" &&
-      !/[0-3][0-9]\/[0-1][0-2]\/[0-9]{4}/.test(values[c])
-    ) {
-      errors[c] = "Ingrese una fecha de nacimiento válido";
+    if (c === "fecha_nacimiento") {
+      const datos = values[c].match(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/);
+      if (
+        datos &&
+        isNaN(new Date(`${datos[3]}/${datos[2]}/${datos[1]}`).getTime())
+      ) {
+        errors[c] = "Ingrese una fecha de nacimiento válido";
+      }
     }
   });
   return errors;
